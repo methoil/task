@@ -1,25 +1,40 @@
 // CRUD
 
-const mongodb = require("mongodb");
-const MongoClient = mongodb.MongoClient;
+const { MongoClient, ObjectId } = require("mongodb");
 
 const connectionUrl = "mongodb://127.0.0.1:27017";
 const databaseName = "task-manager";
 
-const id = new mongodb.ObjectId();
-
 const ll = console.log;
-
-ll(id.id);
-ll(id.id.length);
-ll(id.toHexString());
-ll(id.toHexString().length);
 
 MongoClient.connect(connectionUrl, { useNewUrlParser: true }, (err, client) => {
   if (err) return ll(err);
 
   const db = client.db(databaseName);
 
+  db.collection("users").findOne(
+    { _id: new ObjectId("5ee031bbf9998f281f56eef2") },
+    (error, user) => {
+      ll(user);
+    }
+  );
+
+  const cursor = db.collection("users").find({ class: "Fullstack Engineer" });
+  cursor.count((err, users) => {
+    ll(users);
+  });
+
+  ll("\nTasks:");
+  db.collection("users").findOne(
+    { _id: ObjectId("5ef177929821cd2d58add69e") },
+    (err, task) => ll(task)
+  );
+  db.collection("users")
+    .find({ completed: false })
+    .toArray((err, incomplete) => ll(incomplete));
+});
+
+function insertItemsFactory() {
   const insert1 = () =>
     db.collection("users").insertOne(
       {
@@ -35,7 +50,6 @@ MongoClient.connect(connectionUrl, { useNewUrlParser: true }, (err, client) => {
         ll(result.ops);
       }
     );
-  insert1();
 
   const insert2 = () =>
     db.collection("users").insertMany(
@@ -79,5 +93,6 @@ MongoClient.connect(connectionUrl, { useNewUrlParser: true }, (err, client) => {
 
       ll(result.ops);
     });
-  insert3();
-});
+
+  return { insert1, insert2, insert3 };
+}
