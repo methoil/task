@@ -1,39 +1,77 @@
 // CRUD
 
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient, ObjectId, ObjectID } = require("mongodb");
 
 const connectionUrl = "mongodb://127.0.0.1:27017";
 const databaseName = "task-manager";
 
 const ll = console.log;
+const dbName = "users";
 
 MongoClient.connect(connectionUrl, { useNewUrlParser: true }, (err, client) => {
   if (err) return ll(err);
 
   const db = client.db(databaseName);
+  // update all incomplete tasks to completed
+  const updateDocuments = () => {
+    db.collection(dbName)
+      .updateMany(
+        {
+          description: { $regex: /^task/ },
+          completed: false,
+        },
+        {
+          $set: {
+            completed: true,
+          },
+        }
+      )
+      .then((res) => {
+        ll(res);
+      })
+      .catch((err) => {
+        ll(err);
+      });
+  };
 
-  db.collection("users").findOne(
-    { _id: new ObjectId("5ee031bbf9998f281f56eef2") },
-    (error, user) => {
-      ll(user);
-    }
-  );
+  const deleteDocument = () => {
+    db.collection(dbName)
+      .deleteOne({
+        description: "task3",
+      })
+      .then((res) => {
+        ll(res);
+      })
+      .catch((err) => {
+        ll(err);
+      });
+  };
 
-  const cursor = db.collection("users").find({ class: "Fullstack Engineer" });
-  cursor.count((err, users) => {
-    ll(users);
-  });
+  deleteDocument();
 
-  ll("\nTasks:");
-  db.collection("users").findOne(
-    { _id: ObjectId("5ef177929821cd2d58add69e") },
-    (err, task) => ll(task)
-  );
-  db.collection("users")
-    .find({ completed: false })
-    .toArray((err, incomplete) => ll(incomplete));
+  // db.collection("users").findOne(
+  //   { _id: new ObjectId("5ee031bbf9998f281f56eef2") },
+  //   (error, user) => {
+  //     ll(user);
+  //   }
+  // );
+
+  // const cursor = db.collection("users").find({ class: "Fullstack Engineer" });
+  // cursor.count((err, users) => {
+  //   ll(users);
+  // });
+
+  // ll("\nTasks:");
+  // db.collection("users").findOne(
+  //   { _id: ObjectId("5ef177929821cd2d58add69e") },
+  //   (err, task) => ll(task)
+  // );
+  // db.collection("users")
+  //   .find({ completed: false })
+  //   .toArray((err, incomplete) => ll(incomplete));
 });
 
+// +++++++++++ ///
 function insertItemsFactory() {
   const insert1 = () =>
     db.collection("users").insertOne(
