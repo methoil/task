@@ -9,16 +9,19 @@ mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
 const Task = mongoose.model('Task', {
   description: {
     type: String,
+    required: true,
+    trim: true,
   },
   completed: {
     type: Boolean,
+    default: false,
   },
 });
 
-// const me = new Task({
-//   description: 'Progress in Node Class',
-//   completed: true,
-// });
+const me = new Task({
+  description: 'Vacume floor again',
+  // completed: true,
+});
 
 const User = mongoose.model('User', {
   name: {
@@ -37,6 +40,17 @@ const User = mongoose.model('User', {
       }
     },
   },
+  password: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 7,
+    validate(val) {
+      if (val.toLowerCase().includes('password')) {
+        throw new Error('Password contains the text "password" - make a more secure password!');
+      }
+    },
+  },
   class: {
     type: String,
     trim: true,
@@ -49,11 +63,12 @@ const User = mongoose.model('User', {
   },
 });
 
-const me = new User({
-  name: 'Pablo',
-  // class: 'Fullstack Engineer',
-  email: 'bloomingdale@crup.io',
-});
+// const me = new User({
+//   name: 'Timothy',
+//   class: 'Mail Man',
+//   email: 'fedex@crup.io',
+//   password: '         password22332',
+// });
 
 me.save()
   .then(() => {
