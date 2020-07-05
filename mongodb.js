@@ -1,12 +1,12 @@
 // CRUD
 
-const { MongoClient, ObjectId, ObjectID } = require("mongodb");
+const { MongoClient, ObjectId, ObjectID } = require('mongodb');
 
-const connectionUrl = "mongodb://127.0.0.1:27017";
-const databaseName = "task-manager";
+const connectionUrl = 'mongodb://127.0.0.1:27017';
+const databaseName = 'task-manager';
 
 const ll = console.log;
-const dbName = "users";
+const dbName = 'users';
 
 MongoClient.connect(connectionUrl, { useNewUrlParser: true }, (err, client) => {
   if (err) return ll(err);
@@ -24,7 +24,7 @@ MongoClient.connect(connectionUrl, { useNewUrlParser: true }, (err, client) => {
           $set: {
             completed: true,
           },
-        }
+        },
       )
       .then((res) => {
         ll(res);
@@ -37,7 +37,7 @@ MongoClient.connect(connectionUrl, { useNewUrlParser: true }, (err, client) => {
   const deleteDocument = () => {
     db.collection(dbName)
       .deleteOne({
-        description: "task3",
+        description: 'task3',
       })
       .then((res) => {
         ll(res);
@@ -74,59 +74,59 @@ MongoClient.connect(connectionUrl, { useNewUrlParser: true }, (err, client) => {
 // +++++++++++ ///
 function insertItemsFactory() {
   const insert1 = () =>
-    db.collection("users").insertOne(
+    db.collection('users').insertOne(
       {
         _id: id,
-        name: "Methos",
-        class: "Demon Hunter",
+        name: 'Methos',
+        class: 'Demon Hunter',
       },
       (error, result) => {
         if (error) {
-          return ll("Unable to insert user");
+          return ll('Unable to insert user');
         }
 
         ll(result.ops);
-      }
+      },
     );
 
   const insert2 = () =>
-    db.collection("users").insertMany(
+    db.collection('users').insertMany(
       [
         {
-          name: "Jen",
-          class: "Designer",
+          name: 'Jen',
+          class: 'Designer',
         },
         {
-          name: "Gunther",
-          class: "General",
+          name: 'Gunther',
+          class: 'General',
         },
       ],
       (err, result) => {
         if (err) {
-          return ll("Unable to insert docs", err);
+          return ll('Unable to insert docs', err);
         }
         ll(result.ops);
-      }
+      },
     );
 
   const threeEntries = [
     {
-      description: "task1",
+      description: 'task1',
       completed: true,
     },
     {
-      description: "task2",
+      description: 'task2',
       completed: false,
     },
     {
-      description: "task3",
+      description: 'task3',
       completed: true,
     },
   ];
   const insert3 = () =>
-    db.collection("users").insertMany(threeEntries, (err, result) => {
+    db.collection('users').insertMany(threeEntries, (err, result) => {
       if (err) {
-        return ll("error", err);
+        return ll('error', err);
       }
 
       ll(result.ops);
